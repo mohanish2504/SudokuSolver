@@ -1,4 +1,4 @@
-# SudokuSolver
+# SudokuSolver ( Work in Progress)
 
 Application for solving sudoku
 
