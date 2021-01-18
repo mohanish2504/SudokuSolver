@@ -1,7 +1,6 @@
 # SudokuSolver ( Work in Progress)
 
-Application for solving sudoku
-
+Application for solving sudoku with openCV and Backtracking
 ## Getting Started
 
 This project is a starting point for a Flutter application.
