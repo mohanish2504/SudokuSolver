@@ -1,4 +1,4 @@
-# SudokuSolver ( Work in Progress)
+# SudokuSolver
 
 Application for solving sudoku with openCV and Backtracking
 ## Getting Started
