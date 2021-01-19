@@ -100,11 +100,19 @@ def predict(img):
       if probabilityValue > 0.8:
         numbers.append(classIndex[0])
       else:numbers.append(0)
-    
+
+    res = all(i == 0 for i in numbers) 
+   # print(numbers)
+   # print(res)
+    if res:
+        return {'sudokufound':False,
+                   'sudoku':np.array(numbers).tolist()
+                   }
     return {'sudokufound':True,
                    'sudoku':np.array(numbers).tolist()
                    }
         
-        
-        
+
+
+          
     
