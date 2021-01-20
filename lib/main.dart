@@ -301,9 +301,10 @@ class BodyState extends State<Body> {
                   height: MediaQuery.of(context).size.height * 0.02,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
+                    Container(
+                      margin: EdgeInsets.only(left:5,right:5),
                         child: InkWell(
                             onTap: () async {
                               _showPicker(context);
@@ -313,7 +314,8 @@ class BodyState extends State<Body> {
                               //Navigator.pop(context);
                             },
                             child: getImportButton(context))),
-                    Center(
+                    Container(
+                       margin: EdgeInsets.only(left:5,right:5),
                         child: InkWell(
                             onTap: () {
                               if (Solver()) {
@@ -370,7 +372,6 @@ class Sudoku extends StatefulWidget {
     return SudokuGrid();
   }
 }
-
 class SudokuGrid extends State<Sudoku> {
   double outerwidth = 1.5, innerborderwidth = 1.5, cell_width = 0.5;
 
@@ -436,6 +437,31 @@ class SudokuGrid extends State<Sudoku> {
                     : Center(
                         child: Text(sudoku[r][c].toString(),
                             style: TextStyle(fontSize: 20)))));
+  }
+}
+class SudokuLayout extends StatelessWidget {
+  double outerwidth = 1.5, innerborderwidth = 1.5, cell_width = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+
+    return AspectRatio(
+      aspectRatio: 1,
+      child: GridView.builder(
+        gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 1.5),
+            ),
+          );
+        },
+        itemCount: 9,
+        scrollDirection: Axis.vertical,
+      ),
+    );
   }
 }
 
@@ -562,28 +588,3 @@ class ButtonsState extends State<Buttons> {
   }
 }
 
-class SudokuLayout extends StatelessWidget {
-  double outerwidth = 1.5, innerborderwidth = 1.5, cell_width = 0.5;
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-
-    return AspectRatio(
-      aspectRatio: 1,
-      child: GridView.builder(
-        gridDelegate:
-            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(width: 1.5),
-            ),
-          );
-        },
-        itemCount: 9,
-        scrollDirection: Axis.vertical,
-      ),
-    );
-  }
-}
