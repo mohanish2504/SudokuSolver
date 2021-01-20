@@ -17,10 +17,6 @@ var selected_unit;
 var sudoku = List.generate(row, (i) => List(col), growable: false);
 SudokuGrid sudokuState;
 
-
-
-
-
 void main() {
   selected_row = null;
   selected_col = null;
@@ -35,6 +31,7 @@ class MyApp extends StatefulWidget {
     return MyAppState();
   }
 }
+
 class MyAppState extends State<MyApp> {
   File file;
   final url = Uri.parse("http://192.168.31.59:8888/");
@@ -63,11 +60,13 @@ class Body extends StatefulWidget {
     return BodyState();
   }
 }
+
 class BodyState extends State<Body> {
   File file;
   final url = Uri.parse("http://192.168.31.59:8888/");
   int len = 9;
-  var newsudoku = List.generate(9, (i) => List.generate(9,(j) => 0), growable: false);
+  var newsudoku =
+      List.generate(9, (i) => List.generate(9, (j) => 0), growable: false);
 
   // Backend Utils
 
@@ -89,6 +88,7 @@ class BodyState extends State<Body> {
       },
     );
   }
+
   void _upload(context) async {
     if (file == null) return;
     Dio dio = new Dio();
@@ -104,31 +104,30 @@ class BodyState extends State<Body> {
                 responseType: ResponseType.plain // or ResponseType.JSON
                 ))
         .then((dynamic response) {
-            Map<String, dynamic> result = jsonDecode(response.toString());
-            bool sudokufound =
+      Map<String, dynamic> result = jsonDecode(response.toString());
+      bool sudokufound =
           result['sudokufound'].toString().toLowerCase() == 'true';
-          Navigator.of(context).pop();
-          if (sudokufound) {
-            int pointer = 0;
-            List<dynamic> numberList = new List();
-            numberList = result['sudoku'];
-            int r, c;
-            int len = 9;
-            numberList.forEach((element) {
-              r = (pointer / len).floor();
-              c = pointer % len;
-              sudoku[r][c] = element.toString()=='0'?null:element;
-              pointer+=1;
-            });
-            setState(() {
-
-            });
-          }else{
-            Toast.show('Error! could not load sudoku', context,duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
-          }
-
+      Navigator.of(context).pop();
+      if (sudokufound) {
+        int pointer = 0;
+        List<dynamic> numberList = new List();
+        numberList = result['sudoku'];
+        int r, c;
+        int len = 9;
+        numberList.forEach((element) {
+          r = (pointer / len).floor();
+          c = pointer % len;
+          sudoku[r][c] = element.toString() == '0' ? null : element;
+          pointer += 1;
+        });
+        setState(() {});
+      } else {
+        Toast.show('Error! could not load sudoku', context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      }
     }).catchError((error) => print(error));
   }
+
   void _imgFromCamera(context) async {
     PickedFile imgfile;
     imgfile = (await ImagePicker().getImage(source: ImageSource.camera));
@@ -139,6 +138,7 @@ class BodyState extends State<Body> {
     _upload(context);
     // setState(() {});
   }
+
   void _imgFromGallery(context) async {
     PickedFile imgfile;
     imgfile = (await ImagePicker().getImage(source: ImageSource.gallery));
@@ -149,6 +149,7 @@ class BodyState extends State<Body> {
     _upload(context);
     // setState(() {});
   }
+
   void _showPicker(context) {
     showModalBottomSheet(
         context: context,
@@ -183,7 +184,8 @@ class BodyState extends State<Body> {
 
   bool Solver() {
     print('Solving');
-    newsudoku = List.generate(9, (i) => List.generate(9,(j) => 0), growable: false);
+    newsudoku =
+        List.generate(9, (i) => List.generate(9, (j) => 0), growable: false);
     for (int r = 0; r < len; r++) {
       for (int c = 0; c < len; c++) {
         if (sudoku[r][c] != null) {
@@ -197,30 +199,37 @@ class BodyState extends State<Body> {
     bool res = solve();
     return res;
   }
-  bool checkRow(r,n){
-    for(int i  = 0;i<len;i++){
-      if(newsudoku[r][i]==n)return false;
+
+  bool checkRow(r, n) {
+    for (int i = 0; i < len; i++) {
+      if (newsudoku[r][i] == n) return false;
     }
     return true;
   }
-  bool checkCol(c,n){
-    for(int i  = 0;i<len;i++){
-      if(newsudoku[i][c]==n)return false;
+
+  bool checkCol(c, n) {
+    for (int i = 0; i < len; i++) {
+      if (newsudoku[i][c] == n) return false;
     }
     return true;
   }
-  int getRange(x){
-    if (x <= 2) return 0;
-    else if (x <= 5) return 3;
-    else return 6;
+
+  int getRange(x) {
+    if (x <= 2)
+      return 0;
+    else if (x <= 5)
+      return 3;
+    else
+      return 6;
   }
-  bool checkGrid(int curr_row,int curr_col,int n){
+
+  bool checkGrid(int curr_row, int curr_col, int n) {
     int row_range = getRange(curr_row);
     int col_range = getRange(curr_col);
 
-    for(int i = row_range;i<row_range+3;i++){
-      for(int j = col_range;j<col_range+3;j++){
-        if(n == newsudoku[i][j]){
+    for (int i = row_range; i < row_range + 3; i++) {
+      for (int j = col_range; j < col_range + 3; j++) {
+        if (n == newsudoku[i][j]) {
           return false;
         }
       }
@@ -228,11 +237,13 @@ class BodyState extends State<Body> {
 
     return true;
   }
+
   List<int> loc = [0, 0];
-  bool emptyPlace(){
-    for(int i = 0;i<len;i++){
-      for(int j=0;j<len;j++){
-        if(newsudoku[i][j] == 0 ){
+
+  bool emptyPlace() {
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; j < len; j++) {
+        if (newsudoku[i][j] == 0) {
           loc[0] = i;
           loc[1] = j;
           return true;
@@ -241,26 +252,26 @@ class BodyState extends State<Body> {
     }
     return false;
   }
-  bool safe(int r,int c,int n){
 
+  bool safe(int r, int c, int n) {
     return checkCol(c, n) &&
         checkGrid(r, c, n) &&
         checkRow(r, n) &&
         newsudoku[r][c] == 0;
-
   }
+
   bool solve() {
-    loc = [0,0];
-    if(!emptyPlace()){
+    loc = [0, 0];
+    if (!emptyPlace()) {
       return true;
     }
-    int r,c;
+    int r, c;
     r = loc[0];
     c = loc[1];
-    for(int n = 1;n<=len;n++){
-      if(safe(r, c, n)){
+    for (int n = 1; n <= len; n++) {
+      if (safe(r, c, n)) {
         newsudoku[r][c] = n;
-        if(solve()) return true;
+        if (solve()) return true;
         newsudoku[r][c] = 0;
       }
     }
@@ -287,7 +298,7 @@ class BodyState extends State<Body> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 SizedBox(
-                  height: 5,
+                  height: MediaQuery.of(context).size.height * 0.02,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -305,34 +316,46 @@ class BodyState extends State<Body> {
                     Center(
                         child: InkWell(
                             onTap: () {
-                              if(Solver()){
+                              if (Solver()) {
                                 setState(() {
-                                  sudoku=newsudoku;
+                                  sudoku = newsudoku;
                                 });
-                              }else{
+                              } else {
                                 print('false');
-                                Toast.show('Invalid Sudoku',context,duration: Toast.LENGTH_LONG,);
+                                Toast.show(
+                                  'Invalid Sudoku',
+                                  context,
+                                  duration: Toast.LENGTH_LONG,
+                                );
                               }
                             },
                             child: getSolverButton(context))),
                   ],
                 ),
                 SizedBox(
-                  height: 5,
+                  height: MediaQuery.of(context).size.height * 0.02,
                 ),
-                Stack(
-                  children: [
-                    Sudoku(),
-                    IgnorePointer(
-                      child: SudokuLayout(),
+                AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      margin: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5)
+                      ),
+                      child:Stack(
+                        children: [
+                          Sudoku(),
+                          IgnorePointer(
+                            child: SudokuLayout(),
+                          ),
+                        ],
+                      ) ,
                     )
-                  ],
                 ),
-                Spacer(),
-                Buttons(),
                 SizedBox(
-                  height: 10,
-                )
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                Buttons(),
               ],
             ),
           ),
@@ -347,6 +370,7 @@ class Sudoku extends StatefulWidget {
     return SudokuGrid();
   }
 }
+
 class SudokuGrid extends State<Sudoku> {
   double outerwidth = 1.5, innerborderwidth = 1.5, cell_width = 0.5;
 
@@ -360,8 +384,10 @@ class SudokuGrid extends State<Sudoku> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    double cardWidth = MediaQuery.of(context).size.width;
+    double cardHeight = MediaQuery.of(context).size.height * 0.6;
     return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
+      height: MediaQuery.of(context).size.height * .6,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(left: 2, right: 2),
       child: GridView.builder(
@@ -372,6 +398,7 @@ class SudokuGrid extends State<Sudoku> {
         itemCount: 81,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
+        physics: new NeverScrollableScrollPhysics(),
       ),
     );
   }
@@ -419,7 +446,6 @@ class Buttons extends StatefulWidget {
     return ButtonsState();
   }
 }
-
 class ButtonsState extends State<Buttons> {
   var buttonList = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'X'];
 
@@ -535,6 +561,7 @@ class ButtonsState extends State<Buttons> {
     );
   }
 }
+
 class SudokuLayout extends StatelessWidget {
   double outerwidth = 1.5, innerborderwidth = 1.5, cell_width = 0.5;
 
@@ -542,84 +569,21 @@ class SudokuLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return Container(
-        margin: EdgeInsets.only(left: 2, right: 2),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.6,
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: outerwidth)),
-        child: Column(
-          children: [
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-              ],
-            )),
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-              ],
-            )),
-            Expanded(
-                child: Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black, width: innerborderwidth)),
-                )),
-              ],
-            )),
-          ],
-        ));
+    return AspectRatio(
+      aspectRatio: 1,
+      child: GridView.builder(
+        gridDelegate:
+            SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 1.5),
+            ),
+          );
+        },
+        itemCount: 9,
+        scrollDirection: Axis.vertical,
+      ),
+    );
   }
 }
