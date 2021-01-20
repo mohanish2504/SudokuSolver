@@ -63,7 +63,7 @@ class Body extends StatefulWidget {
 
 class BodyState extends State<Body> {
   File file;
-  final url = Uri.parse("http://192.168.31.59:8888/");
+  final url = Uri.parse("https://sudokusolvercam.herokuapp.com/solver");
   int len = 9;
   var newsudoku =
       List.generate(9, (i) => List.generate(9, (j) => 0), growable: false);
