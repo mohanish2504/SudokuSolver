@@ -1,14 +1,18 @@
-import socket
 import cv2
-import os
 import numpy as np
 from flask import Flask,request,jsonify
 import Predictor
 
 app = Flask(__name__)
+ 
+   
 
+@app.route('/')
+@app.route('/index')
+def landingpage():
+    return "<h1 style='text-align:center;'>Solving Sudokus</h1>"
 
-@app.route('/', methods=['POST'])
+@app.route('/solver', methods=['POST'])
 def predict():
     if request.method == 'POST':
         file = request.files.get('image').read()
@@ -26,12 +30,10 @@ def predict():
             response = {
                  "sudokufound":True,
                 "statusCode":200,
-                "sudoku":result['sudoku']
+                 "sudoku":result['sudoku']
             }
         return jsonify(response)
         
-hostip = socket.gethostbyname(socket.gethostname())
-port= "8888"
-ip = hostip+":"+port
-print(ip)
-app.run(debug=False,host=hostip,port=8888)
+
+if __name__ == '__main__':
+    app.run(debug=True)
