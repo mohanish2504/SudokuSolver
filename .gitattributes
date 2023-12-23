@@ -1,0 +1,4 @@
+*.html linguist-detectable=false
+*.h  linguist-language=go
+*.cpp  linguist-language=go
+*.dart  linguist-detectable=false
